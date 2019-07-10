@@ -1,0 +1,32 @@
+# Proof that host toolchain is correctly selected
+cc_binary(
+    name = "test-host",
+    srcs = ["test.cpp"],
+)
+
+genrule(
+    name = "hello-world",
+    cmd = "bash -c './$(location :test-host) > $@'",
+    outs = ["hello.txt"],
+    tools = [":test-host"],
+)
+
+# Proof that target toolchain is correctly selected
+cc_binary(
+    name = "test-target",
+    srcs = ["test.cpp"],
+)
+
+
+# Doesn't use host or target toolchain!?
+proto_library(
+    name = "libmyproto",
+    srcs = [
+        "myproto.proto",
+    ],
+)
+
+cc_proto_library(
+    name = "libmyproto_cc_proto",
+    deps = [":libmyproto"],
+)

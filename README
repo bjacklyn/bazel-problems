@@ -1,0 +1,22 @@
+```
+docker build mydocker --tag mydocker
+docker run -it -v $(pwd):/bazel -v $(pwd)/../bazel-cache:/root/.cache/bazel --workdir /bazel --entrypoint /bin/bash mydocker
+
+bazel clean --expunge
+```
+
+# Show host toolchain is correctly used
+```
+bazel build //:test-host -s --incompatible_enable_cc_toolchain_resolution 
+```
+
+# Show target toolchain is correctly used
+```
+bazel build //:test-target -s --incompatible_enable_cc_toolchain_resolution
+```
+
+
+# Show host toolchain is used to compile protobuf, but it suddenly tries to use autoconfiguration toolchain to compile the generated myproto.cc file
+```
+bazel build //:libmyproto_cc_proto -s --incompatible_enable_cc_toolchain_resolution
+```
